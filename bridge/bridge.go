@@ -330,8 +330,22 @@ func (b *Bridge) GetMappingByIRC(channel string) *Mapping {
 // GetMappingByDiscord returns a Mapping for a given Discord channel.
 // Returns nil if a Mapping does not exist.
 func (b *Bridge) GetMappingByDiscord(channel string) *Mapping {
+
+	// refer to https://godoc.org/github.com/bwmarrin/discordgo#Channel
+	ch, err := b.discord.State.Channel(channel)
+	
+	if err == nil && ch.NSFW {
+		return nil
+	}
+	if strings.HasPrefix(ch.Name, "#logicmoo") {
+		for _, mapping := range b.mappings {
+			if mapping.IRCChannel == "#logicmoo" {
+				return mapping
+			}
+		}
+	}
 	for _, mapping := range b.mappings {
-		if mapping.DiscordChannel == channel {
+		if mapping.IRCChannel == "#frdcsa" {
 			return mapping
 		}
 	}
